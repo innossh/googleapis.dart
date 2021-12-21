@@ -33,6 +33,7 @@ class MetadataServerAuthorizationFlow extends BaseFlow {
   factory MetadataServerAuthorizationFlow(
     http.Client client, {
     String email = 'default',
+    String? scopes,
   }) {
     final encodedEmail = Uri.encodeComponent(email);
 
@@ -42,7 +43,9 @@ class MetadataServerAuthorizationFlow extends BaseFlow {
         'http://$metadataHost/$_serviceAccountUrlInfix';
 
     final scopesUrl = Uri.parse('$serviceAccountPrefix/$encodedEmail/scopes');
-    final tokenUrl = Uri.parse('$serviceAccountPrefix/$encodedEmail/token');
+    // https://cloud.google.com/run/docs/securing/service-identity#fetching_identity_and_access_tokens_using_the_metadata_server
+    final tokenUrl = Uri.parse(
+        '$serviceAccountPrefix/$encodedEmail/token${scopes == null ? "" : "?scopes=$scopes"}');
     return MetadataServerAuthorizationFlow._(
       client,
       email,
