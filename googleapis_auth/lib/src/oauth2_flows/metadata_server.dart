@@ -63,6 +63,8 @@ class MetadataServerAuthorizationFlow extends BaseFlow {
 
   @override
   Future<AccessCredentials> run() async {
+    print(
+        'MetadataServerAuthorizationFlow _tokenUrl:$_tokenUrl, _headers:$_headers');
     final results = await Future.wait(
       [
         _client.requestJson(
@@ -73,8 +75,13 @@ class MetadataServerAuthorizationFlow extends BaseFlow {
       ],
     );
     final json = results.first as Map<String, dynamic>;
+    print('MetadataServerAuthorizationFlow json:$json');
     final accessToken = parseAccessToken(json);
+    print(
+        'MetadataServerAuthorizationFlow accessToken.expiry:${accessToken.expiry}');
 
+    print(
+        'MetadataServerAuthorizationFlow (results.last as String):${(results.last as String)}');
     final scopes = (results.last as String)
         .replaceAll('\n', ' ')
         .split(' ')
